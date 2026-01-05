@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人笔记管理系统</title>
+    <!-- 引入外部CSS样式表 -->
+    <link rel="stylesheet" href="style.css">
+    <!-- 富文本编辑器样式（Quill） -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css">
+</head>
+<body>
+
+    <!-- 顶部导航区域 -->
+    <header class="app-header">
+        <div class="brand">
+            <div class="brand-logo">虾</div>
+            <div class="brand-text">
+                <div class="brand-title">笔记</div>
+                <div class="brand-sub">102300429</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <select id="langSelect" class="ghost-btn lang-select" aria-label="选择语言">
+                <option value="zh">中文</option>
+                <option value="en">English</option>
+            </select>
+            <button id="themeToggle" class="ghost-btn theme-toggle" aria-label="切换主题" title="切换主题"></button>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+
+        <!-- 左侧：笔记分类栏 -->
+        <section class="sidebar left-sidebar">
+            <div class="sidebar-title">
+                <h2>我的分组</h2>
+                <span class="pill" id="categoryCount">0</span>
+            </div>
+            <ul id="categoryList" class="category-list"></ul>
+            <div class="category-actions">
+                <button id="addCategoryButtonFooter">+ 新建分类</button>
+            </div>
+        </section>
+
+        <!-- 中间：笔记列表栏 -->
+        <section class="main-content">
+            <div class="list-header">
+                <div class="list-title">
+                    <h2 id="currentCategoryTitle">全部笔记</h2>
+                    <span class="pill soft" id="noteCountIndicator">0 条</span>
+                    <div class="list-actions-right">
+                        <button id="renameCategoryButton" class="ghost-btn">重命名分类</button>
+                        <button id="deleteCategoryButton" class="ghost-btn">删除分类</button>
+                        <button id="newNoteButton" class="primary-btn">+ 新建笔记</button>
+                    </div>
+                </div>
+                <div class="list-tools">
+                    <div class="search-bar inline">
+                        <span class="icon-search" aria-hidden="true"></span>
+                        <input type="text" id="searchInput" placeholder="搜索标题或内容...">
+                    </div>
+                    <button id="searchButton">搜索</button>
+                    <button id="clearSearchButton" class="ghost-btn">清空</button>
+                    <select id="sortSelect" aria-label="笔记排序">
+                        <option value="modified">按最新修改</option>
+                        <option value="title">按标题 A-Z</option>
+                        <option value="category">按分类</option>
+                    </select>
+                </div>
+            </div>
+            <ul id="noteList" class="note-list"></ul>
+            <div id="noteListEmpty" class="empty-state" aria-live="polite">暂无笔记，点击“新建笔记”开始记录。</div>
+        </section>
+
+        <!-- 右侧：笔记编辑栏 -->
+        <section class="sidebar right-sidebar">
+            <div id="noteEditor" class="note-editor" style="display: none;">
+                <div class="editor-meta">
+                    <input type="text" id="noteTitleInput" placeholder="笔记标题" required>
+                    <div class="meta-row">
+                        <label for="noteCategorySelect">分类</label>
+                        <select id="noteCategorySelect"></select>
+                        <span class="dot"></span>
+                        <label for="editorModeSelect">编辑模式</label>
+                        <select id="editorModeSelect">
+                            <option value="plain">纯文本</option>
+                            <option value="html">富文本</option>
+                            <option value="markdown">Markdown</option>
+                        </select>
+                        <span class="dot"></span>
+                        <span id="lastModifiedInfo">最后修改时间: --</span>
+                        <label class="private-toggle"><input type="checkbox" id="privateToggle"><span id="privateLabelText"> 私密</span></label>
+                    </div>
+                </div>
+                <div id="richEditor" class="rich-editor" style="display: none;"></div>
+                <textarea id="noteContentInput" placeholder="在这里输入笔记内容..."></textarea>
+                <div id="markdownPreview" class="markdown-preview" style="display: none;"></div>
+                <div class="editor-actions">
+                    <button id="restoreNoteButton" class="ghost-btn" style="display: none;">恢复</button>
+                    <button id="deleteNoteButton" class="ghost-btn">删除</button>
+                    <button id="saveNoteButton" class="primary-btn">保存</button>
+                </div>
+            </div>
+            <div id="emptyNoteHint" class="empty-note" style="display: block;">
+                <div class="empty-card">
+                    <div class="big-icon" aria-hidden="true"></div>
+                    <p>请选择左侧的笔记，或点击“新建笔记”开始创作。</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 弹窗或确认对话框的占位符 -->
+    <div id="modalOverlay" class="modal-overlay" style="display: none;"></div>
+    <div id="modalDialog" class="modal-dialog" style="display: none;">
+        <div class="modal-content">
+            <p id="modalMessage">确认操作？</p>
+            <div class="modal-buttons">
+                <button id="confirmModalButton">确认</button>
+                <button id="cancelModalButton">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 富文本与 Markdown 库（CDN） -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
